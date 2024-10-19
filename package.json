@@ -1,0 +1,24 @@
+{
+  "name": "tradesperson-directory-ireland",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "node build.js",
+    "preview": "astro preview",
+    "astro": "astro",
+    "deploy": "node deploy.js"
+  },
+  "dependencies": {
+    "astro": "^2.5.0",
+    "@astrojs/react": "^2.1.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "node-fetch": "^3.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.6",
+    "@types/react-dom": "^18.2.4"
+  }
+}

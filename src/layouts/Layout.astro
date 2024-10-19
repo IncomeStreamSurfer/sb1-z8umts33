@@ -1,0 +1,48 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  canonicalURL: string;
+}
+
+const { title, description, canonicalURL } = Astro.props;
+
+function getCanonicalURL(path: string) {
+  if (Astro.site) {
+    return new URL(path, Astro.site).toString();
+  }
+  // Fallback to just using the path if Astro.site is not available
+  return path;
+}
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={getCanonicalURL(canonicalURL)} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={getCanonicalURL(canonicalURL)} />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Find a Tradesperson in Ireland",
+        "url": "https://www.findatradespersonireland.com"
+      }
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

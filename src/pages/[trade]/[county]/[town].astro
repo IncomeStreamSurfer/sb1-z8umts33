@@ -1,0 +1,22 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { trades } from '../../../data/trades';
+import { counties } from '../../../data/counties';
+import { towns } from '../../../data/towns';
+import { fetchTradespeople } from '../../../utils/dataForSEO';
+
+export async function getStaticPaths() {
+  // ... (keep the existing getStaticPaths function)
+}
+
+const { trade, county, town } = Astro.props;
+const tradespeople = await fetchTradespeople(trade, `${town}, ${county}`);
+
+const title = `Best ${trade} in ${town}, ${county}, Ireland - Top-Rated Professionals`;
+const description = `Find the best ${trade} in ${town}, ${county}. Compare ratings, reviews, and contact information for local ${trade.toLowerCase()} professionals.`;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://www.findatradespersonireland.com').toString();
+---
+
+<Layout title={title} description={description} canonicalURL={canonicalURL}>
+  <!-- ... (keep the existing content) -->
+</Layout>

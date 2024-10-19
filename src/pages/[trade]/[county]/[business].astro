@@ -1,0 +1,41 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { trades } from '../../../data/trades';
+import { counties } from '../../../data/counties';
+import { fetchTradespeople } from '../../../utils/dataForSEO';
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const trade of trades) {
+    for (const county of counties) {
+      const tradespeople = await fetchTradespeople(trade, county);
+      for (const person of tradespeople) {
+        paths.push({
+          params: {
+            trade: trade.toLowerCase().replace(/\s+/g, '-'),
+            county: county.toLowerCase().replace(/\s+/g, '-'),
+            business: person.title.toLowerCase().replace(/\s+/g, '-')
+          },
+          props: { trade, county, person }
+        });
+      }
+    }
+  }
+  return paths;
+}
+
+const { trade, county, person } = Astro.props;
+---
+
+<Layout title={`${person.title} - ${trade} in ${county}, Ireland`}>
+  <main>
+    <h1>{person.title}</h1>
+    <h2>{trade} in {county}, Ireland</h2>
+    <p>{person.snippet}</p>
+    <p>Rating: {person.rating?.value} ({person.rating?.votes_count} votes)</p>
+    <p>Phone: {person.phone}</p>
+    <p>Address: {person.address}</p>
+    {person.url && <p>Website: <a href={person.url} target="_blank" rel="noopener noreferrer">{person.url}</a></p>}
+    {person.main_image && <img src={person.main_image} alt={person.title} />}
+  </main>
+</Layout>

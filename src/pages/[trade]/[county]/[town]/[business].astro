@@ -1,0 +1,59 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import { trades } from '../../../../data/trades';
+import { counties } from '../../../../data/counties';
+import { towns } from '../../../../data/towns';
+import { fetchTradespeople } from '../../../../utils/dataForSEO';
+
+export async function getStaticPaths() {
+  const paths = [];
+
+  for (const trade of trades) {
+    for (const county of counties) {
+      for (const town of towns) {
+        const tradespeople = await fetchTradespeople(trade, `${town}, ${county}`);
+        for (const person of tradespeople) {
+          paths.push({
+            params: {
+              trade: trade.toLowerCase().replace(/\s+/g, '-'),
+              county: county.toLowerCase().replace(/\s+/g, '-'),
+              town: town.toLowerCase().replace(/\s+/g, '-'),
+              business: person.title.toLowerCase().replace(/\s+/g, '-')
+            },
+            props: { trade, county, town, person }
+          });
+        }
+      }
+    }
+  }
+
+  return paths;
+}
+
+const { trade, county, town, person } = Astro.props;
+
+const title = `${person.title} - ${trade} in ${town}, ${county}, Ireland`;
+const description = `${person.title} provides professional ${trade.toLowerCase()} services in ${town}, ${county}. View ratings, contact information, and service details.`;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://www.findatradespersonireland.com').toString();
+---
+
+<Layout title={title} description={description} canonicalURL={canonicalURL}>
+  <main itemscope itemtype="https://schema.org/LocalBusiness">
+    <h1 itemprop="name">{person.title}</h1>
+    <h2>{trade} in {town}, {county}, Ireland</h2>
+    <p itemprop="description">{person.snippet}</p>
+    <div itemprop="aggregateRating" itemscope itemtype="https://schema.org/AggregateRating">
+      <p>Rating: <span itemprop="ratingValue">{person.rating?.value}</span> (<span itemprop="reviewCount">{person.rating?.votes_count}</span> votes)</p>
+    </div>
+    <p>Phone: <span itemprop="telephone">{person.phone}</span></p>
+    <p>Address: <span itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
+      <span itemprop="streetAddress">{person.address}</span>,
+      <span itemprop="addressLocality">{town}</span>,
+      <span itemprop="addressRegion">{county}</span>,
+      <span itemprop="addressCountry">Ireland</span>
+    </span></p>
+    {person.url && <p>Website: <a href={person.url} target="_blank" rel="noopener noreferrer" itemprop="url">{person.url}</a></p>}
+    {person.main_image && <img src={person.main_image} alt={person.title} itemprop="image" />}
+  </main>
+</Layout>
+---

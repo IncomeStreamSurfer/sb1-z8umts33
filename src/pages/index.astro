@@ -1,0 +1,14 @@
+---
+import Layout from '../layouts/Layout.astro';
+import TradesList from '../components/TradesList';
+import { trades } from '../data/trades';
+import { counties } from '../data/counties';
+
+const title = "Find a Tradesperson in Ireland - Expert Services Near You";
+const description = "Discover skilled tradespeople across Ireland. From plumbers to electricians, find reliable professionals in your area for all your home improvement needs.";
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://www.findatradespersonireland.com').toString();
+---
+
+<Layout title={title} description={description} canonicalURL={canonicalURL}>
+  <!-- ... (keep the existing content) -->
+</Layout>
